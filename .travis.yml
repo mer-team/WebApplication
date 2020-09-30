@@ -1,0 +1,32 @@
+language: node_js
+
+node_js:
+  - node
+ 
+before_install:
+  - cd ./merApi
+
+install:
+  - npm install
+
+services:
+  - mysql
+
+env:
+  global:
+  - NODE_ENV=test
+
+before_script:
+  - mysql -e "create database mer"
+  - mysql -uroot -e "grant all privileges on mer.* to 'user'@'%' identified by '123qwe'"
+  - npx sequelize-cli db:migrate
+  - npx sequelize-cli db:seed:all  
+  
+script:
+  - npm test
+
+after_success: 
+  - npm run coverage
+
+# notifications:
+#  slack: projectosipt20182019:rARE6PX1hJuNVzPBseXumyHG
